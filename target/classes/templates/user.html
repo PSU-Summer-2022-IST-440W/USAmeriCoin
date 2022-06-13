@@ -1,0 +1,60 @@
+<th:block th:include="fragments/header"/>
+
+<hr>
+<h2>Edit User Account</h2>
+<hr>
+<form action="#" th:action="@{/editUser}" th:object="${user}" method="POST" class="row g-3">
+    <input type="hidden" th:field="*{userId}">
+    <div class="col-12">
+        <label for="firstName" class="col-form-label">First Name:</label>
+        <input type="text" id="firstName" th:field="*{firstName}" class="form-control">
+    </div>
+    <div class="col-12">
+        <label for="lastName" class="col-form-label">Last Name:</label>
+        <input type="text" id="lastName" th:field="*{lastName}" class="form-control">
+    </div>
+    <div class="col-12">
+        <label for="email" class="col-form-label">Email:</label>
+        <input type="text" id="email" th:field="*{email}" class="form-control">
+    </div>
+    <div class="col-12">
+        <label for="username" class="col-form-label">Username:</label>
+        <input type="text" id="username" th:field="*{username}" class="form-control">
+    </div>
+
+    <th:block th:if="${session.isManagement}">
+        <div class="col-12">
+            <label for="roles" class="col-form-label">User Roles:</label>
+            <select class="form-control" id="roles" th:field="*{roles}" multiple="multiple">
+                <option value="">Select Role(s) .....</option>
+                <option th:each="role : ${allRoles}"
+                        th:value="${role.roleId}"
+                        th:text="${role.roleName} "></option>
+            </select>
+        </div>
+    </th:block>
+    <th:block th:unless="${session.isManagement}">
+        <input type="hidden" th:field="*{roles}">
+    </th:block>
+
+    <div class="col-12">
+    </div>
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-info float-end">Update Account</button>
+    </div>
+</form>
+<form action="#" th:action="@{/password}" th:object="${pass}" method="POST" class="row g-3">
+    <input type="hidden" th:field="*{userId}">
+    <div class="col-12">
+        <label for="password" class="col-form-label">New Password</label>
+        <input type="password" id="password" th:field="*{password}" class="form-control">
+    </div>
+    <div class="col-12">
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-info float-end">Update Password</button>
+    </div>
+</form>
+
+<th:block th:include="fragments/footer"/>

@@ -1,0 +1,30 @@
+<th:block th:include="fragments/header"/>
+
+<hr>
+<h2>Login to USAmeriCoin</h2>
+<hr>
+<div><br><br></div>
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <div class="login-form row g-3">
+            <form action="#" th:action="@{/login}" th:object="${user}" method="POST">
+                <div class="col-12">
+                    <label for="username" class="col-form-label">Username</label>
+                    <input type="text" id="username" th:field="*{username}" class="form-control">
+                </div>
+                <div class="col-12"><br></div>
+                <div class="col-12">
+                    <label for="password" class="col-form-label">Password</label>
+                    <input type="password" th:field="*{password}" id="password" class="form-control">
+                    <p th:if="${param.retry != null and param.retry[0] == '1'}">Invalid credentials. Please try again.</p>
+                </div>
+                <div class="col-12"><br><br></div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-info btn-block">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:include="fragments/footer"/>

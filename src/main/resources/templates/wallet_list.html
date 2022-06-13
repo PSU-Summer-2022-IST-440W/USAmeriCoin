@@ -1,0 +1,25 @@
+<th:block th:include="fragments/header"/>
+
+<hr>
+<h2>My Wallets</h2>
+<hr>
+<th:block th:each="thisWallet, iStat : ${walletList}">
+    <th:block th:if="${iStat.getIndex() % 4 == 0 || iStat.isFirst()}">
+        <div class="row my-5">
+    </th:block>
+            <div class="col-12 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                <div class="card">
+                    <h5 class="card-header text-center" th:text="*{thisWallet.getWalletName()}"></h5>
+                    <div class="card-body">
+                        <h1 class="card-announce text-center" th:text="${#numbers.formatCurrency(thisWallet.getWalletAmount())}"></h1>
+                        <p class="card-text text-success"></p>
+                    </div>
+                    <a th:href="@{/wallets/{id}(id=${thisWallet.getWalletId()})}" class="btn btn-block btn-info btn-sm mt-auto">View Wallet Details</a>
+                </div>
+            </div>
+    <th:block th:if="${(iStat.getIndex()-3) % 4 == 0 || iStat.isLast()}">
+        </div>
+    </th:block>
+</th:block>
+
+<th:block th:include="fragments/footer"/>

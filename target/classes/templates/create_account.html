@@ -1,0 +1,33 @@
+<th:block th:include="fragments/header"/>
+
+<hr>
+<h2>Create An USAmeriCoin User Account</h2>
+<hr>
+<form action="#" th:action="@{/createAccount}" th:object="${user}" method="POST" class="row g-3">
+    <div class="col-12">
+        <label for="username" class="col-form-label">Username:</label>
+        <input type="text" id="username" th:field="*{username}" class="form-control">
+    </div>
+    <div class="col-12">
+        <label for="password" class="col-form-label">Password:</label>
+        <input type="password" th:field="*{password}" id="password" class="form-control">
+    </div>
+    <div class="col-12">
+        <label for="firstName" class="col-form-label">First Name:</label>
+        <input type="text" id="firstName" th:field="*{firstName}" class="form-control">
+    </div>
+    <div class="col-12">
+        <label for="lastName" class="col-form-label">Last Name:</label>
+        <input type="text" id="lastName" th:field="*{lastName}" class="form-control">
+    </div>
+    <div class="col-12">
+        <label for="email" class="col-form-label">Email:</label>
+        <input type="text" id="email" th:field="*{email}" class="form-control">
+    </div>
+    <div class="col-12">
+        <a href="/userList" class="btn btn-light btn-sm float-start">Cancel</a>
+        <button type="submit" class="btn btn-info float-end">Create Account</button>
+    </div>
+</form>
+
+<th:block th:include="fragments/footer"/>
