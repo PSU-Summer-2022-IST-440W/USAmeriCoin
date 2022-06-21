@@ -36,7 +36,7 @@ public class Wallet implements Serializable {
     @Column(name="name")
     private String walletName;
     @Column(name="amount_usd")
-    private Float walletAmount;
+    private Double walletAmount;
     @Column(name="address")
     private String walletAddress;
     @Column(name="public_key")
@@ -54,11 +54,11 @@ public class Wallet implements Serializable {
         this.walletId = walletId;
     }
 
-    public Float getWalletAmount() {
+    public Double getWalletAmount() {
         return walletAmount;
     }
 
-    public void setWalletAmount(Float walletAmount) {
+    public void setWalletAmount(Double walletAmount) {
         this.walletAmount = walletAmount;
     }
 
@@ -117,4 +117,17 @@ public class Wallet implements Serializable {
     public void setWalletCurrencies(Set<WalletCurrency> walletCurrencies) {
         this.walletCurrencies = walletCurrencies;
     }
+
+    public void ProcessAllWalletCurrentQuotes() {
+        Double walletValue = 0.0;
+        for (WalletCurrency thisWC : this.walletCurrencies) {
+            thisWC.getCurrencyCrypto().fetchCoinMarketCapData();
+            thisWC.setAmountUsd(thisWC.getQuantity() * thisWC.getCurrencyCrypto().getAmountUsd());
+            thisWC.setAmountDateTime(LocalDateTime.now());
+            walletValue += thisWC.getAmountUsd();
+        }
+        this.setWalletAmount(walletValue);
+        this.setAmountDateTime(LocalDateTime.now());
+    }
+
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Set;
 
 /**
  * WalletController
@@ -36,8 +37,17 @@ public class WalletController {
      */
     @GetMapping("/wallets")
     public String walletList(Model model, HttpSession session) {
-        model.addAttribute("walletList",  this.userService.getUserById((long)session.getAttribute("authUserId")).getUserWallets());
-        model.addAttribute("cryptoList",  this.walletService.getAllCryptocurrencies());
+        model.addAttribute("pageTitle", "Account Wallets");
+        Set<Wallet> userWallets = this.userService.getUserById((long)session.getAttribute("authUserId")).getUserWallets();
+        Double accountAmountUsd = 0.0;
+        for (Wallet thisWallet : userWallets) {
+            thisWallet.ProcessAllWalletCurrentQuotes();
+            accountAmountUsd += thisWallet.getWalletAmount();
+            this.walletService.saveWallet(thisWallet);
+        }
+        model.addAttribute("accountAmountUsd", accountAmountUsd);
+        model.addAttribute("walletList", userWallets);
+        model.addAttribute("cryptoList", this.walletService.getAllCryptocurrencies());
         return "wallet_list";
     }
 
@@ -47,9 +57,13 @@ public class WalletController {
      */
     @GetMapping("/wallets/{walletId}")
     public String walletDetail(@PathVariable(value = "walletId") long walletId, Model model, HttpSession session) {
-        model.addAttribute("wallet",  this.walletService.getWalletById(walletId));
+        Wallet thisWallet = this.walletService.getWalletById(walletId);
+        thisWallet.ProcessAllWalletCurrentQuotes();
+        this.walletService.saveWallet(thisWallet);
+        model.addAttribute("wallet",  thisWallet);
         model.addAttribute("cryptoList",  this.walletService.getAllCryptocurrencies());
-        return "wallet_edit";
+        model.addAttribute("pageTitle", thisWallet.getWalletName() + " Wallet");
+        return "wallet_details";
     }
 
     /**

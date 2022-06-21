@@ -1,5 +1,6 @@
 package edu.psu.ist440.USAmeriCoin.service;
 
+import edu.psu.ist440.USAmeriCoin.apiModel.CoinMarketCap.CoinMarketCap;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -7,7 +8,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-
+import com.fasterxml.jackson.databind.ObjectMapper; // version 2.11.1
 /**
  * RestApiService Object
  * Responsible for all the low-level HTTP REST API interactions
@@ -19,8 +20,11 @@ import java.net.http.HttpResponse;
 @Service
 public class RestApiService {
 
-    private String CoinMarketCapApi (String apiUrl) {
+    public CoinMarketCap CoinMarketCapApi (String apiUrl) {
+        ObjectMapper om = new ObjectMapper();
+        CoinMarketCap thisCMP = new CoinMarketCap();
         int httpStatusCode;
+
         String apiResult = "";
         String acceptHeader = "application/json";
         HttpClient client = HttpClient.newHttpClient();
@@ -35,9 +39,10 @@ public class RestApiService {
             HttpResponse<String> response = client.send(request,HttpResponse.BodyHandlers.ofString());
             httpStatusCode = response.statusCode();
             apiResult = response.body();
-            return apiResult;
+            thisCMP = om.readValue(apiResult, CoinMarketCap.class);
+            return thisCMP;
         } catch ( IOException | InterruptedException e) {
-            return apiResult;
+            return thisCMP;
         }
     }
 }

@@ -27,9 +27,9 @@ public class WalletCurrency implements Serializable {
     private Cryptocurrency currencyCrypto;
 
     @Column(name="quantity")
-    private float quantity;
+    private Double quantity;
     @Column(name="amount_usd")
-    private float amountUsd;
+    private Double amountUsd;
     @Column(name = "amount_dt", columnDefinition = "DATETIME") //, updatable=false, insertable = false)
     private LocalDateTime amountDateTime;
 
@@ -57,19 +57,19 @@ public class WalletCurrency implements Serializable {
         this.currencyCrypto = currencyCrypto;
     }
 
-    public float getQuantity() {
+    public Double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(float quantity) {
+    public void setQuantity(Double quantity) {
         this.quantity = quantity;
     }
 
-    public float getAmountUsd() {
+    public Double getAmountUsd() {
         return amountUsd;
     }
 
-    public void setAmountUsd(float amountUsd) {
+    public void setAmountUsd(Double amountUsd) {
         this.amountUsd = amountUsd;
     }
 

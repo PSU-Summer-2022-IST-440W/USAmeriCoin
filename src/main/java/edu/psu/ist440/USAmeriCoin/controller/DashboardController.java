@@ -2,7 +2,6 @@ package edu.psu.ist440.USAmeriCoin.controller;
 
 import edu.psu.ist440.USAmeriCoin.model.Wallet;
 import edu.psu.ist440.USAmeriCoin.model.*;
-import edu.psu.ist440.USAmeriCoin.model.ReportKPI;
 import edu.psu.ist440.USAmeriCoin.model.User;
 import edu.psu.ist440.USAmeriCoin.service.WalletService;
 import edu.psu.ist440.USAmeriCoin.service.UserService;
@@ -36,7 +35,6 @@ public class DashboardController {
      */
     @GetMapping("/reports")
     public String reportsHome(Model model, HttpSession session) {
-        ReportKPI reportKpi = new ReportKPI();
 
         ArrayList<Wallet> userWallets = new ArrayList<>();
 

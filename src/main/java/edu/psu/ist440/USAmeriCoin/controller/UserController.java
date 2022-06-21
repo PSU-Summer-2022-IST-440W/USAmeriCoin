@@ -45,6 +45,7 @@ public class UserController {
      */
     @GetMapping("/editUser")
     public String user(Model model, HttpSession session) {
+        model.addAttribute("pageTitle", "Edit User Profile");
         model.addAttribute("allRoles", userService.getAllRoles());
         model.addAttribute("user", this.userService.getUserById((long)session.getAttribute("authUserId")));
         model.addAttribute("pass", this.userService.getPasswordById((long)session.getAttribute("authUserId")));
@@ -87,6 +88,7 @@ public class UserController {
     @GetMapping("/createAccount")
     public String createAccount(Model model, HttpSession session){
         User user = new User();
+        model.addAttribute("pageTitle", "Create a USAmeriCoin User Account");
         model.addAttribute("user", user);
         return "create_account";
     }
@@ -97,6 +99,7 @@ public class UserController {
      */
     @GetMapping("/userList")
     public String userList(Model model, HttpSession session){
+        model.addAttribute("pageTitle", "Administration User List");
         ArrayList<User> usersToList = new ArrayList<>();
         usersToList.addAll(this.userService.getAllUsers());
         Collections.sort(usersToList,(u1, u2) -> u1.toString().compareTo(u2.toString()));

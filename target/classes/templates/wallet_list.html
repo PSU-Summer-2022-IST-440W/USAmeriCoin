@@ -1,23 +1,31 @@
 <th:block th:include="fragments/header"/>
 
-<hr>
-<h2>My Wallets</h2>
-<hr>
+<div class="row">
+    <div class="col-12 col-xl-10 mb-4 mb-lg-0">
+        <div class="card h-100">
+            <h5 class="card-header text-center">Account Value</h5>
+            <div class="card-body">
+                <h1 class="card-announce text-center" th:text="${#numbers.formatCurrency(accountAmountUsd)}"></h1>
+                <p class="card-text text-success text-center" th:text="${#calendars.format(#calendars.createNow(), 'MMM dd, yyyy h:mm:ss a')}"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <th:block th:each="thisWallet, iStat : ${walletList}">
-    <th:block th:if="${iStat.getIndex() % 4 == 0 || iStat.isFirst()}">
+    <th:block th:if="${iStat.getIndex() % 2 == 0 || iStat.isFirst()}">
         <div class="row my-5">
     </th:block>
-            <div class="col-12 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                <div class="card">
-                    <h5 class="card-header text-center" th:text="*{thisWallet.getWalletName()}"></h5>
-                    <div class="card-body">
-                        <h1 class="card-announce text-center" th:text="${#numbers.formatCurrency(thisWallet.getWalletAmount())}"></h1>
-                        <p class="card-text text-success"></p>
-                    </div>
-                    <a th:href="@{/wallets/{id}(id=${thisWallet.getWalletId()})}" class="btn btn-block btn-info btn-sm mt-auto">View Wallet Details</a>
-                </div>
+    <div class="col-12 col-md-8 col-lg-5 mb-4 mb-lg-0 mb-lg-0">
+        <div class="card">
+            <h5 class="card-header text-center" th:text="*{thisWallet.getWalletName()}"></h5>
+            <div class="card-body">
+                <p class="card-announce text-center text-nowrap" th:text="${#numbers.formatCurrency(thisWallet.getWalletAmount())}"></p>
             </div>
-    <th:block th:if="${(iStat.getIndex()-3) % 4 == 0 || iStat.isLast()}">
+            <a th:href="@{/wallets/{id}(id=${thisWallet.getWalletId()})}" class="btn btn-block btn-info btn-sm mt-auto">View Wallet Details</a>
+        </div>
+    </div>
+    <th:block th:if="${(iStat.getIndex()-1) % 2 == 0 || iStat.isLast()}">
         </div>
     </th:block>
 </th:block>

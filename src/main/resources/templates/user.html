@@ -1,8 +1,5 @@
 <th:block th:include="fragments/header"/>
 
-<hr>
-<h2>Edit User Account</h2>
-<hr>
 <form action="#" th:action="@{/editUser}" th:object="${user}" method="POST" class="row g-3">
     <input type="hidden" th:field="*{userId}">
     <div class="col-12">

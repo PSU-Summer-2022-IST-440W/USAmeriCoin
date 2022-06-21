@@ -24,12 +24,14 @@ public class LoginController {
     private UserService userService;
 
     @GetMapping("/")
-    public String index(HttpSession session) {
+    public String index(Model model, HttpSession session) {
         if (session.getAttribute("isAuth") != null)
-            if ((boolean)session.getAttribute("isAuth"))
+            if ((boolean)session.getAttribute("isAuth")) {
+                model.addAttribute("pageTitle", "Welcome to USAmeriCoin");
                 return "index";
-            else
+            } else {
                 return "redirect:/login";
+            }
         else
             return "redirect:/login";
     }
@@ -41,6 +43,7 @@ public class LoginController {
     @GetMapping("/login")
     public String login(Model model, HttpSession session) {
         User user = new User();
+        model.addAttribute("pageTitle", "Login to USAmeriCoin");
         model.addAttribute("user", user);
         return "login";
     }
@@ -50,7 +53,7 @@ public class LoginController {
      * resets all session variables when a user logs out of the system
      */
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
+    public String logout(Model model, HttpSession session) {
         session.setAttribute("authUserId", null);
         session.setAttribute("isAuth", false);
         session.setAttribute("isUser", false);
