@@ -21,6 +21,9 @@ public class WalletCurrency implements Serializable {
     @JoinColumn(name="wallet_id")
     private Wallet currencyWallet;
 
+    @OneToMany(mappedBy = "transactionCurrency")
+    private Set<Transaction> currencyTransactions = new HashSet<>();
+
     //@JsonIgnore
     @ManyToOne
     @JoinColumn(name="crypto_id")
