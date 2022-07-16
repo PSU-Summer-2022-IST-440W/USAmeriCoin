@@ -5,11 +5,16 @@
         <div class="card h-100">
             <h5 class="card-header text-center">Account Value</h5>
             <div class="card-body">
-                <h1 class="card-announce text-center" th:text="${#numbers.formatCurrency(accountAmountUsd)}"></h1>
                 <th:block th:if="${isAmountCurrent == true}">
+                    <h1 class="card-announce text-center" th:text="${#numbers.formatCurrency(accountAmountUsd)}"></h1>
                     <p class="card-text text-success text-center" th:text="${#temporals.format(accountDateTime, 'MMM dd, yyyy h:mm:ss a')}"></p>
                 </th:block>
                 <th:block th:unless="${isAmountCurrent == true}">
+                    <div class="row align-items-center">
+                        <div class="col text-right"><img width="50" th:src="@{/images/warning.png}"/></div>
+                        <div class="col text-center"><h1 class="card-announce text-center" th:text="${#numbers.formatCurrency(accountAmountUsd)}"></h1></div>
+                        <div class="col text-left"><img width="50" th:src="@{/images/warning.png}"/></div>
+                    </div>
                     <p class="card-text text-danger text-center" th:text="${#temporals.format(accountDateTime, 'MMM dd, yyyy h:mm:ss a')}"></p>
                 </th:block>
             </div>
