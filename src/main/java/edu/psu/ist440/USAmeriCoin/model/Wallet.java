@@ -6,7 +6,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Wallet Object
@@ -19,7 +21,7 @@ import java.util.Set;
 
 @Entity
 @Table(name="wallet")
-public class Wallet implements Serializable {
+public class Wallet implements Serializable, Comparable<Wallet> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="wallet_id")
@@ -35,16 +37,16 @@ public class Wallet implements Serializable {
 
     @Column(name="name")
     private String walletName;
-    @Column(name="amount_usd")
-    private Double walletAmount;
+    //@Column(name="amount_usd")
+    //private Double walletAmount;
     @Column(name="address")
     private String walletAddress;
     @Column(name="public_key")
     private String publicKey;
     @Column(name="private_key")
     private String privateKey;
-    @Column(name = "amount_dt", columnDefinition = "DATETIME") //, updatable=false, insertable = false)
-    private LocalDateTime amountDateTime;
+//    @Column(name = "amount_dt", columnDefinition = "DATETIME") //, updatable=false, insertable = false)
+//    private LocalDateTime amountDateTime;
 
     public Long getWalletId() {
         return walletId;
@@ -54,14 +56,14 @@ public class Wallet implements Serializable {
         this.walletId = walletId;
     }
 
-    public Double getWalletAmount() {
+/*    public Double getWalletAmount() {
         return walletAmount;
     }
 
     public void setWalletAmount(Double walletAmount) {
         this.walletAmount = walletAmount;
     }
-
+*/
     public String getWalletAddress() {
         return walletAddress;
     }
@@ -102,32 +104,37 @@ public class Wallet implements Serializable {
         this.walletName = walletName;
     }
 
-    public LocalDateTime getAmountDateTime() {
-        return amountDateTime;
-    }
-
-    public void setAmountDateTime(LocalDateTime amountDateTime) {
-        this.amountDateTime = amountDateTime;
+    public LocalDateTime getWalletDateTime() {
+        LocalDateTime walletDateTime = LocalDateTime.now();
+        for (WalletCurrency thisWC : this.walletCurrencies) {
+            if (walletDateTime.compareTo(thisWC.getCurrencyCrypto().getAmountDateTime()) > 0)
+                walletDateTime = thisWC.getCurrencyCrypto().getAmountDateTime();
+        }
+        return walletDateTime;
     }
 
     public Set<WalletCurrency> getWalletCurrencies() {
         return walletCurrencies;
     }
 
+    public List<WalletCurrency> getSortedWalletCurrencies() {
+        return walletCurrencies.stream().sorted().collect(Collectors.toList());
+    }
+
     public void setWalletCurrencies(Set<WalletCurrency> walletCurrencies) {
         this.walletCurrencies = walletCurrencies;
     }
 
-    public void ProcessAllWalletCurrentQuotes() {
+    public Double getWalletAmount() {
         Double walletValue = 0.0;
         for (WalletCurrency thisWC : this.walletCurrencies) {
-            thisWC.getCurrencyCrypto().fetchCoinMarketCapData();
-            thisWC.setAmountUsd(thisWC.getQuantity() * thisWC.getCurrencyCrypto().getAmountUsd());
-            thisWC.setAmountDateTime(LocalDateTime.now());
-            walletValue += thisWC.getAmountUsd();
+            walletValue += thisWC.getQuantity() * thisWC.getCurrencyCrypto().getAmountUsd();
         }
-        this.setWalletAmount(walletValue);
-        this.setAmountDateTime(LocalDateTime.now());
+        return walletValue;
     }
 
+    @Override
+    public int compareTo(Wallet o) {
+        return this.getWalletName().compareTo(o.getWalletName());
+    }
 }

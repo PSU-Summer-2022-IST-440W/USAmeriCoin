@@ -1,6 +1,7 @@
 package edu.psu.ist440.USAmeriCoin.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import edu.psu.ist440.USAmeriCoin.apiModel.CoinGecko.CoinGecko;
 import edu.psu.ist440.USAmeriCoin.apiModel.CoinMarketCap.*;
 import edu.psu.ist440.USAmeriCoin.service.RestApiService;
 
@@ -25,6 +26,10 @@ public class Cryptocurrency implements Serializable {
     private String cryptoLogo;
     @Column(name="symbol")
     private String symbol;
+    @Column(name="symbol_coinmarketcap")
+    private String symbolCoinMarketCap;
+    @Column(name="symbol_coingecko")
+    private String symbolCoinGecko;
     @Column(name="amount_usd")
     private Double amountUsd;
     @Column(name="amount_dt")
@@ -32,6 +37,8 @@ public class Cryptocurrency implements Serializable {
 
     @Transient
     private CoinMarketCap coinMarketCap;
+    @Transient
+    private CoinGecko coinGecko;
 
     @JsonIgnore
     @OneToMany(mappedBy = "currencyCrypto")
@@ -74,18 +81,28 @@ public class Cryptocurrency implements Serializable {
         this.walletCryptos = walletCryptos;
     }
 
-    public CoinMarketCap getCoinMarketCapData() {
-        return this.coinMarketCap;
-    }
-
-    public void fetchCoinMarketCapData() {
+    private boolean fetchCryptoApiData() {
         CoinMarketCap thisCMP = new CoinMarketCap();
+        CoinGecko thisCG = new CoinGecko();
+        boolean successfulDataFetch = false;
         if (!this.symbol.equals("USAC")) {
-            if (ChronoUnit.MINUTES.between(this.amountDateTime,LocalDateTime.now()) > 10 ) {
+            if (ChronoUnit.MINUTES.between(this.amountDateTime,LocalDateTime.now()) > 10) {
                 RestApiService restService = new RestApiService();
-                thisCMP = restService.CoinMarketCapApi("https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?symbol=" + this.symbol);
-                this.amountUsd = thisCMP.data.cryptoAssets.get(0).quote.usd.price;
-                this.amountDateTime = LocalDateTime.now();
+                thisCMP = restService.CoinMarketCapApi("https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?symbol=" + this.getSymbolCoinMarketCap());
+                if (thisCMP != null) {
+                    successfulDataFetch = true;
+                    this.coinMarketCap = thisCMP;
+                    this.amountUsd = thisCMP.data.cryptoAssets.get(0).quote.usd.price;
+                    this.amountDateTime = LocalDateTime.now();
+                } else {
+                    thisCG = restService.CoinGeckoApi("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=" + this.symbolCoinGecko);
+                    if (thisCG != null) {
+                        successfulDataFetch = true;
+                        this.coinGecko = thisCG;
+                        this.amountUsd = thisCG.current_price;
+                        this.amountDateTime = LocalDateTime.now();
+                    }
+                }
             }
         } else {
             thisCMP.data = new Data();
@@ -97,7 +114,7 @@ public class Cryptocurrency implements Serializable {
             this.amountUsd = thisCMP.data.cryptoAssets.get(0).quote.usd.price;
             this.amountDateTime = LocalDateTime.now();
         }
-        this.coinMarketCap = thisCMP;
+        return successfulDataFetch;
     }
 
     public String getSymbol() {
@@ -109,6 +126,7 @@ public class Cryptocurrency implements Serializable {
     }
 
     public Double getAmountUsd() {
+        fetchCryptoApiData();
         return amountUsd;
     }
 
@@ -122,5 +140,22 @@ public class Cryptocurrency implements Serializable {
 
     public void setAmountDateTime(LocalDateTime amountDateTime) {
         this.amountDateTime = amountDateTime;
+    }
+
+
+    public String getSymbolCoinGecko() {
+        return symbolCoinGecko;
+    }
+
+    public void setSymbolCoinGecko(String symbolCoinGecko) {
+        this.symbolCoinGecko = symbolCoinGecko;
+    }
+
+    public String getSymbolCoinMarketCap() {
+        return symbolCoinMarketCap;
+    }
+
+    public void setSymbolCoinMarketCap(String symbolCoinMarketCap) {
+        this.symbolCoinMarketCap = symbolCoinMarketCap;
     }
 }

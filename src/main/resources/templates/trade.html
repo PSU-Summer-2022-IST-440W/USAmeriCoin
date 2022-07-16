@@ -1,14 +1,15 @@
 <th:block th:include="fragments/header"/>
 
-<hr>
-<h2>Trade Assets</h2>
-<hr>
 
 <th:block th:if="${tradeStep == 1}">
+    <hr>
+    <h2>Trade Assets</h2>
+    <hr>
     <form action="#" th:action="@{/trade/step2}" th:object="${wallet}" method="POST" class="row g-3">
+        <input type="hidden" th:field="*{transaction}">
         <div class="col-12">
-            <label for="wallet" class="col-form-label">Select Source Wallet:</label>
-            <select class="form-select" id="wallet" th:field="*{walletId}">
+            <label for="walletId" class="col-form-label">Select Source Wallet:</label>
+            <select class="form-select" id="walletId" th:field="*{walletId}">
                 <option th:each="thisWallet : ${walletList}" th:value="${thisWallet.getWalletId()}" th:text="${thisWallet.getWalletName()}"></option>
             </select>
         </div>
@@ -19,12 +20,16 @@
 </th:block>
 
 <th:block th:if="${tradeStep == 2}">
-    <form action="#" th:action="@{/trade/step3}" method="POST" class="row g-3">
+    <hr>
+    <h2>Source Wallet: <span th:text="${wallet.getWalletName()}"></span></h2>
+    <hr>
+    <form action="#" th:action="@{/trade/step3}" th:object="${transaction}" method="POST" class="row g-3">
+        <input type="hidden" th:field="*{transaction}">
         <input type="hidden" th:field="*{wallet}">
         <div class="col-12">
-            <label for="walletCurrency" class="col-form-label">Select Source Asset:</label>
-            <select class="form-select" id="walletCurrency" th:field="*{walletCurrency}">
-                <option th:each="thisWalletCurrency : ${walletCurrencyList}" th:value="${thisWalletCurrency.getCurrencyId()}" th:text="${thisWalletCurrency.getCurrencyCrypto().getCryptoName()}"></option>
+            <label for="currencyId" class="col-form-label">Select Source Asset:</label>
+            <select class="form-select" id="currencyId" th:field="*{transaction.currencyId}">
+                <option th:each="thisWalletCurrency : ${walletCurrencyList}" th:value="${thisWalletCurrency.getCurrencyId()}" th:text="|${thisWalletCurrency.getCurrencyCrypto().getCryptoName()} (${#numbers.formatCurrency(thisWalletCurrency.getAmountUsd())})|"></option>
             </select>
         </div>
         <div class="col-12">

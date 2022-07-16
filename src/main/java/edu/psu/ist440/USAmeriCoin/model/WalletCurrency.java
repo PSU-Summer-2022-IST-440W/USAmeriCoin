@@ -10,11 +10,13 @@ import java.util.Set;
 
 @Entity
 @Table(name="wallet_currency")
-public class WalletCurrency implements Serializable {
+public class WalletCurrency implements Serializable, Comparable<WalletCurrency> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="currency_id")
     private long currencyId;
+    @Column(name="quantity")
+    private Double quantity;
 
     @JsonIgnore
     @ManyToOne
@@ -28,13 +30,6 @@ public class WalletCurrency implements Serializable {
     @ManyToOne
     @JoinColumn(name="crypto_id")
     private Cryptocurrency currencyCrypto;
-
-    @Column(name="quantity")
-    private Double quantity;
-    @Column(name="amount_usd")
-    private Double amountUsd;
-    @Column(name = "amount_dt", columnDefinition = "DATETIME") //, updatable=false, insertable = false)
-    private LocalDateTime amountDateTime;
 
     public long getCurrencyId() {
         return currencyId;
@@ -68,19 +63,8 @@ public class WalletCurrency implements Serializable {
         this.quantity = quantity;
     }
 
-    public Double getAmountUsd() {
-        return amountUsd;
-    }
-
-    public void setAmountUsd(Double amountUsd) {
-        this.amountUsd = amountUsd;
-    }
-
-    public LocalDateTime getAmountDateTime() {
-        return amountDateTime;
-    }
-
-    public void setAmountDateTime(LocalDateTime amountDateTime) {
-        this.amountDateTime = amountDateTime;
+    @Override
+    public int compareTo(WalletCurrency o) {
+        return (int)this.getCurrencyCrypto().getCryptoId() - (int)o.getCurrencyCrypto().getCryptoId();
     }
 }

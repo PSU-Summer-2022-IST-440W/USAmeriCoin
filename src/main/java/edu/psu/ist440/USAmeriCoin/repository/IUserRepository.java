@@ -19,8 +19,5 @@ import java.util.Optional;
 public interface IUserRepository extends JpaRepository<User,Long> {
     @Override
     Optional<User> findById(Long userId);
-
     Optional<User> findByUsername(String username);
-
-    List<User> findAllByRoles_RoleName(String roleName);
 }

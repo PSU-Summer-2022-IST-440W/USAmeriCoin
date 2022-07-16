@@ -13,7 +13,7 @@
                 <div class="col-12">
                     <label for="password" class="col-form-label">Password</label>
                     <input type="password" th:field="*{password}" id="password" class="form-control">
-                    <p th:if="${param.retry != null and param.retry[0] == '1'}">Invalid credentials. Please try again.</p>
+                    <p th:text="${message}"></p>
                 </div>
                 <div class="col-12"><br><br></div>
                 <div class="col-12">

@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
  */
 
 @Entity
+@NamedQuery(name = "User.findByUsername", query = "FROM User WHERE username = ?1")
 @Table(name="user")
 public class User implements Serializable {
     @Id
